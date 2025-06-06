@@ -156,7 +156,7 @@ export default function TaskGame() {
       <h1 className="game-title">Life Simulator</h1>
       <div className="score-display">Score: {score}</div>
       <div className="penalty-description">
-        Penalties on miss:{" "}
+        Click the tasks to complete. Penalties on miss:{" "}
         <span className="penalty-label orange">Orange: -10</span>{" "}
         <span className="penalty-label yellow">Yellow: -3</span>{" "}
         <span className="penalty-label blue">Blue: -1</span>
