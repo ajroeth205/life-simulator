@@ -147,8 +147,13 @@ export default function TaskGame() {
   // Remove only active tasks on click, but disable if Sick Day active
   const removeTask = (id: number) => {
     if (showSickDay) return;
-    setTasks((prev) => prev.filter((task) => task.id !== id));
-    setScore((s) => s + 1); // optional: reward for clicking
+
+    setTasks((prev) => {
+      const task = prev.find((t) => t.id === id);
+      if (!task || task.missed) return prev; // block removal
+      setScore((s) => s + 1); // optional: reward for clicking
+      return prev.filter((t) => t.id !== id);
+    });
   };
 
   return (
