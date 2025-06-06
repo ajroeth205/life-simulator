@@ -1,0 +1,135 @@
+/* Container & text */
+.game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #111;
+  overflow: hidden;
+  user-select: none;
+  font-family: Arial, sans-serif;
+}
+
+.game-title {
+  color: white;
+  text-align: center;
+  padding-top: 16px;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.score-display {
+  color: red;
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.penalty-description {
+  text-align: center;
+  color: white;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+.penalty-label {
+  border-style: solid;
+  border-width: 3px;
+  border-radius: 8px;
+  padding: 2px 8px;
+  margin-left: 8px;
+  font-weight: bold;
+  color: white;
+  user-select: none;
+}
+
+.penalty-label.orange {
+  border-color: orange;
+}
+
+.penalty-label.yellow {
+  border-color: yellow;
+}
+
+.penalty-label.blue {
+  border-color: deepskyblue;
+}
+
+/* REST!!! text in background */
+.rest-text {
+  position: absolute;
+  color: red;
+  font-weight: bold;
+  font-size: 2rem;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+/* Task boxes */
+.task-box {
+  position: absolute;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.8);
+  user-select: none;
+  transition: all 0.3s ease-in-out;
+  z-index: 1;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.task-box.orange {
+  border: 4px solid orange;
+}
+
+.task-box.yellow {
+  border: 4px solid yellow;
+}
+
+.task-box.blue {
+  border: 4px solid deepskyblue;
+}
+
+.task-box.missed {
+  background-color: #fcc;
+}
+
+.task-id {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.task-time {
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
+.task-missed {
+  color: darkred;
+  font-weight: bold;
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
+/* Sick Day popup */
+.sick-day-popup {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 0, 0, 0.9);
+  color: white;
+  font-weight: bold;
+  font-size: 3rem;
+  padding: 40px 60px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.7);
+  z-index: 1000;
+  user-select: none;
+  pointer-events: none;
+  text-align: center;
+}
