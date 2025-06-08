@@ -21,23 +21,12 @@ const PENALTIES = {
   orange: -10,
 };
 
-const TASK_DESCRIPTIONS = [
-  "eat",
-  "sleep",
-  "work",
-  "exercise",
-  "cook",
-  "clean",
-  "taxes",
-  "pick up prescription",
-  "go to doctor",
-  "call insurance",
-  "pharmacy needs SC10 code???",
-  "fix guitar",
-  "administer injection",
-  "hang painting",
-  "call pharmacy",
-];
+const TASK_DESCRIPTIONS_BY_COLOR: Record<BorderColor, string[]> = {
+  blue: ["Breathe", "Stretch", "Hydrate"],
+  yellow: ["Reply to email", "Read", "Organize desk"],
+  orange: ["Finish report", "Do taxes", "Clean house"],
+};
+
 
 type BorderColor = keyof typeof PENALTIES;
 
@@ -84,13 +73,17 @@ export default function TaskGame() {
       setTasks((prev) => {
         const position = getValidRandomPosition(prev);
         const borderColors = Object.keys(PENALTIES) as BorderColor[];
+        const borderColor = borderColors[Math.floor(Math.random() * borderColors.length)];
+        const descriptions = TASK_DESCRIPTIONS_BY_COLOR[borderColor];
+        const description = descriptions[Math.floor(Math.random() * descriptions.length)];
+
         const newTask: Task = {
           id: Math.floor(Math.random() * 1e8),
           timeLeft: Math.floor(Math.random() * (TASK_LIFESPAN_SECONDS_RANGE[1] - TASK_LIFESPAN_SECONDS_RANGE[0] + 1)) + TASK_LIFESPAN_SECONDS_RANGE[0],
-          borderColor: borderColors[Math.floor(Math.random() * borderColors.length)],
+          borderColor,
           top: position.top,
           left: position.left,
-          description: TASK_DESCRIPTIONS[Math.floor(Math.random() * TASK_DESCRIPTIONS.length)],
+          description,
         };
         return [...prev, newTask];
       });
