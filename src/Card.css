@@ -1,7 +1,0 @@
-<div
-  key={task.id}
-  className="p-4 bg-blue-700 text-white cursor-pointer hover:bg-blue-500 transition rounded-md"
-  onClick={() => removeTask(task.id)}
->
-  task #{task.id}
-</div>
