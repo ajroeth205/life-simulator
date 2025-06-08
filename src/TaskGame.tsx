@@ -160,11 +160,16 @@ export default function TaskGame() {
     <div className="game-container">
       <h1 className="game-title">Life Simulator</h1>
       <div className="score-display">Score: {score}</div>
-      <div className="penalty-description">
-        Click the tasks to complete. Penalties on miss:{" "}
-        <span className="penalty-label orange">Orange: -10</span>{" "}
-        <span className="penalty-label yellow">Yellow: -3</span>{" "}
-        <span className="penalty-label blue">Blue: -1</span>
+      <div className="instructions">
+        Click the tasks to complete. Penalties on miss:
+        <div>
+          <span className="penalty-label orange">Orange: -10</span>{" "}
+          <span className="penalty-label yellow">Yellow: -3</span>{" "}
+          <span className="penalty-label blue">Blue: -1</span>
+        </div>
+        <div className="instructions-extra">
+          If it's too difficult, try using a to-do list! Add all the tasks to the list, prioritize them based on color and time remaining, and do them one by one!
+        </div>
       </div>
 
       {/* REST!!! texts in background */}

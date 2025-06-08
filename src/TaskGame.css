@@ -26,11 +26,30 @@
   margin-top: 12px;
 }
 
-.penalty-description {
+.game-title,
+.score-display,
+.instructions {
+  width: max-content;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
   text-align: center;
-  color: white;
-  font-size: 1rem;
-  margin-top: 8px;
+}
+
+.instructions {
+  margin-top: 1rem;
+  line-height: 1.5;
+  margin: 0 auto;
+}
+
+.instructions-extra {
+  margin-top: 0.5em;
+  max-width: inherit;
+  display: block;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: max-content;
 }
 
 .penalty-label {
@@ -45,14 +64,17 @@
 }
 
 .penalty-label.orange {
+  margin: 0 0.5rem;
   border-color: orange;
 }
 
 .penalty-label.yellow {
+  margin: 0 0.5rem;
   border-color: yellow;
 }
 
 .penalty-label.blue {
+  margin: 0 0.5rem;
   border-color: deepskyblue;
 }
 
