@@ -144,12 +144,12 @@ export default function TaskGame() {
 
   useEffect(() => {
     let popupTimeout: ReturnType<typeof setTimeout>;
+    let isNextSickDay = true;
 
     const schedulePopup = () => {
       const delay = POPUP_MIN_DELAY_MS + Math.random() * (POPUP_MAX_DELAY_MS - POPUP_MIN_DELAY_MS);
       popupTimeout = setTimeout(() => {
-        const isSickDay = Math.random() < 0.5;
-        if (isSickDay) {
+        if (isNextSickDay) {
           setShowSickDay(true);
         } else {
           setShowFriendsDay(true);
@@ -158,6 +158,7 @@ export default function TaskGame() {
         setTimeout(() => {
           setShowSickDay(false);
           setShowFriendsDay(false);
+          isNextSickDay = !isNextSickDay; // Alternate next time
           schedulePopup();
         }, POPUP_DURATION_MS);
       }, delay);
