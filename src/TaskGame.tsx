@@ -21,6 +21,24 @@ const PENALTIES = {
   orange: -10,
 };
 
+const TASK_DESCRIPTIONS = [
+  "eat",
+  "sleep",
+  "work",
+  "exercise",
+  "cook",
+  "clean",
+  "taxes",
+  "pick up prescription",
+  "go to doctor",
+  "call insurance",
+  "pharmacy needs SC10 code???",
+  "fix guitar",
+  "administer injection",
+  "hang painting",
+  "call pharmacy",
+];
+
 type BorderColor = keyof typeof PENALTIES;
 
 type Task = {
@@ -29,6 +47,7 @@ type Task = {
   borderColor: BorderColor;
   top: number;
   left: number;
+  description: string;
   missed?: boolean;
 };
 
@@ -52,7 +71,7 @@ export default function TaskGame() {
     for (let i = 0; i < 30; i++) {
       const top = TOP_RESERVED_HEIGHT + Math.random() * (window.innerHeight - TOP_RESERVED_HEIGHT - BOX_HEIGHT);
       const left = Math.random() * (window.innerWidth - BOX_WIDTH);
-      const dummyTask = { id: -1, top, left, timeLeft: 0, borderColor: "orange" as BorderColor };
+      const dummyTask = { id: -1, top, left, timeLeft: 0, borderColor: "orange" as BorderColor, description: "Dummy" };
 
       const overlaps = existingTasks.some((task) => isOverlapping(dummyTask, task));
       if (!overlaps) return { top, left };
@@ -71,6 +90,7 @@ export default function TaskGame() {
           borderColor: borderColors[Math.floor(Math.random() * borderColors.length)],
           top: position.top,
           left: position.left,
+          description: TASK_DESCRIPTIONS[Math.floor(Math.random() * TASK_DESCRIPTIONS.length)],
         };
         return [...prev, newTask];
       });
@@ -199,7 +219,7 @@ export default function TaskGame() {
             cursor: showSickDay || showFriendsDay ? "default" : "pointer",
           }}
         >
-          <div className="task-id">task #{task.id}</div>
+          <div className="task-id">{task.description}</div>
           <div className="task-time">⏱ {task.timeLeft}s</div>
           {task.missed && <div className="task-missed">MISSED!</div>}
         </div>
