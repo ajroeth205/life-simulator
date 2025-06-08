@@ -117,7 +117,7 @@
 }
 
 .task-box.missed {
-  background-color: #fcc;
+  background-color: gray;
 }
 
 .task-id {
@@ -131,27 +131,32 @@
 }
 
 .task-missed {
-  color: darkred;
+  color: red;
   font-weight: bold;
   font-size: 0.8rem;
   margin-top: 6px;
 }
 
-/* Sick Day popup */
-.sick-day-popup {
+.sick-day-popup,
+.friends-day-popup {
   position: fixed;
-  top: 40%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 0, 0, 0.9);
-  color: white;
+  padding: 2rem 3rem;
+  font-size: 2rem;
   font-weight: bold;
-  font-size: 3rem;
-  padding: 40px 60px;
-  border-radius: 20px;
-  box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.7);
+  border-radius: 12px;
+  color: white;
   z-index: 1000;
-  user-select: none;
-  pointer-events: none;
-  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
+
+.sick-day-popup {
+  background-color: red;
+}
+
+.friends-day-popup {
+  background-color: green;
+}
+

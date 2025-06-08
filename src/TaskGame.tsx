@@ -3,18 +3,17 @@ import './TaskGame.css';
 
 // Configurable constants
 const BOX_WIDTH = 140;
-const BOX_HEIGHT = 80;
-
-const TOP_RESERVED_HEIGHT = 185;
+const BOX_HEIGHT = 90;
+const TOP_RESERVED_HEIGHT = 190;
 
 const TASK_SPAWN_INTERVAL_MS = 1000;
 const TASK_LIFESPAN_SECONDS_RANGE = [1, 10];
 
 const REST_SPAWN_INTERVAL_MS = 3000;
 
-const SICK_DAY_MIN_DELAY_MS = 10000;
-const SICK_DAY_MAX_DELAY_MS = 20000;
-const SICK_DAY_DURATION_MS = 5000;
+const POPUP_MIN_DELAY_MS = 10000;
+const POPUP_MAX_DELAY_MS = 20000;
+const POPUP_DURATION_MS = 5000;
 
 const PENALTIES = {
   blue: -1,
@@ -38,6 +37,7 @@ export default function TaskGame() {
   const [score, setScore] = useState(0);
   const [restPositions, setRestPositions] = useState<{top: number; left: number}[]>([]);
   const [showSickDay, setShowSickDay] = useState(false);
+  const [showFriendsDay, setShowFriendsDay] = useState(false);
 
   const isOverlapping = (a: Task, b: Task) => {
     return !(
@@ -123,26 +123,33 @@ export default function TaskGame() {
   }, []);
 
   useEffect(() => {
-    let sickDayTimeout: ReturnType<typeof setTimeout>;
+    let popupTimeout: ReturnType<typeof setTimeout>;
 
-    const scheduleSickDay = () => {
-      const delay = SICK_DAY_MIN_DELAY_MS + Math.random() * (SICK_DAY_MAX_DELAY_MS - SICK_DAY_MIN_DELAY_MS);
-      sickDayTimeout = setTimeout(() => {
-        setShowSickDay(true);
+    const schedulePopup = () => {
+      const delay = POPUP_MIN_DELAY_MS + Math.random() * (POPUP_MAX_DELAY_MS - POPUP_MIN_DELAY_MS);
+      popupTimeout = setTimeout(() => {
+        const isSickDay = Math.random() < 0.5;
+        if (isSickDay) {
+          setShowSickDay(true);
+        } else {
+          setShowFriendsDay(true);
+        }
+
         setTimeout(() => {
           setShowSickDay(false);
-          scheduleSickDay();
-        }, SICK_DAY_DURATION_MS);
+          setShowFriendsDay(false);
+          schedulePopup();
+        }, POPUP_DURATION_MS);
       }, delay);
     };
 
-    scheduleSickDay();
+    schedulePopup();
 
-    return () => clearTimeout(sickDayTimeout);
+    return () => clearTimeout(popupTimeout);
   }, []);
 
   const removeTask = (id: number) => {
-    if (showSickDay) return;
+    if (showSickDay || showFriendsDay) return;
 
     setTasks((prev) => {
       const task = prev.find((t) => t.id === id);
@@ -188,8 +195,8 @@ export default function TaskGame() {
             left: task.left,
             width: BOX_WIDTH,
             height: BOX_HEIGHT,
-            pointerEvents: showSickDay ? "none" : "auto",
-            cursor: showSickDay ? "default" : "pointer",
+            pointerEvents: showSickDay || showFriendsDay ? "none" : "auto",
+            cursor: showSickDay || showFriendsDay ? "default" : "pointer",
           }}
         >
           <div className="task-id">task #{task.id}</div>
@@ -201,6 +208,12 @@ export default function TaskGame() {
       {showSickDay && (
         <div className="sick-day-popup">
           Sick day
+        </div>
+      )}
+
+      {showFriendsDay && (
+        <div className="friends-day-popup">
+          Hanging out with friends!!! Yay!! Fun!!
         </div>
       )}
     </div>
