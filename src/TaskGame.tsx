@@ -33,6 +33,9 @@ const TASK_DESCRIPTIONS_BY_COLOR: Record<BorderColor, string[]> = {
     "read books",
     "mend clothes",
     "fix stain on clothes",
+    "organize digital files",
+    "organize photos",
+    "back up computer",
   ],
   yellow: [
     "donate to friend's gofundme",
@@ -68,6 +71,12 @@ const TASK_DESCRIPTIONS_BY_COLOR: Record<BorderColor, string[]> = {
     "move car for street sweeping",
     "sleep",
     "pick up prescription",
+    "euthanize beloved pet",
+    "attend funeral",
+    "take pet to vet",
+    "give SC10 code to pharmacy???",
+    "give CPT code to insurance???",
+    "fix billing error",
   ],
 };
 
