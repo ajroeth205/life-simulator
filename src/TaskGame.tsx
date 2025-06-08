@@ -1,7 +1,28 @@
 import { useEffect, useState } from "react";
 import './TaskGame.css';
 
-type BorderColor = "orange" | "yellow" | "blue";
+// Configurable constants
+const BOX_WIDTH = 140;
+const BOX_HEIGHT = 80;
+
+const TOP_RESERVED_HEIGHT = 185;
+
+const TASK_SPAWN_INTERVAL_MS = 1000;
+const TASK_LIFESPAN_SECONDS_RANGE = [1, 10];
+
+const REST_SPAWN_INTERVAL_MS = 3000;
+
+const SICK_DAY_MIN_DELAY_MS = 10000;
+const SICK_DAY_MAX_DELAY_MS = 20000;
+const SICK_DAY_DURATION_MS = 5000;
+
+const PENALTIES = {
+  blue: -1,
+  yellow: -3,
+  orange: -10,
+};
+
+type BorderColor = keyof typeof PENALTIES;
 
 type Task = {
   id: number;
@@ -12,17 +33,12 @@ type Task = {
   missed?: boolean;
 };
 
-const BOX_WIDTH = 140;
-const BOX_HEIGHT = 80;
-const TOP_RESERVED_HEIGHT = 150; // Reserved space for title, score, and penalties
-
 export default function TaskGame() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [score, setScore] = useState(0);
   const [restPositions, setRestPositions] = useState<{top: number; left: number}[]>([]);
   const [showSickDay, setShowSickDay] = useState(false);
 
-  // Check if two boxes overlap
   const isOverlapping = (a: Task, b: Task) => {
     return !(
       a.left + BOX_WIDTH < b.left ||
@@ -32,7 +48,6 @@ export default function TaskGame() {
     );
   };
 
-  // Find a non-overlapping random position (below reserved top area)
   const getValidRandomPosition = (existingTasks: Task[]): { top: number; left: number } => {
     for (let i = 0; i < 30; i++) {
       const top = TOP_RESERVED_HEIGHT + Math.random() * (window.innerHeight - TOP_RESERVED_HEIGHT - BOX_HEIGHT);
@@ -45,52 +60,36 @@ export default function TaskGame() {
     return { top: TOP_RESERVED_HEIGHT, left: 0 };
   };
 
-  // Spawn new tasks every second
   useEffect(() => {
     const spawnInterval = setInterval(() => {
       setTasks((prev) => {
         const position = getValidRandomPosition(prev);
-        const borderColors: BorderColor[] = ["orange", "yellow", "blue"];
+        const borderColors = Object.keys(PENALTIES) as BorderColor[];
         const newTask: Task = {
           id: Math.floor(Math.random() * 1e8),
-          timeLeft: Math.floor(Math.random() * 10) + 1,
+          timeLeft: Math.floor(Math.random() * (TASK_LIFESPAN_SECONDS_RANGE[1] - TASK_LIFESPAN_SECONDS_RANGE[0] + 1)) + TASK_LIFESPAN_SECONDS_RANGE[0],
           borderColor: borderColors[Math.floor(Math.random() * borderColors.length)],
           top: position.top,
           left: position.left,
         };
         return [...prev, newTask];
       });
-    }, 1000);
+    }, TASK_SPAWN_INTERVAL_MS);
 
     return () => clearInterval(spawnInterval);
   }, []);
 
-  // Move tasks and update timers every second
   useEffect(() => {
     const moveInterval = setInterval(() => {
       setTasks((prev) => {
         const updatedTasks = prev.map((task, _, all) => {
-          if (task.missed) return task; // Don't move missed tasks
+          if (task.missed) return task;
 
           const otherTasks = all.filter((t) => t.id !== task.id);
           const newPosition = getValidRandomPosition(otherTasks);
 
           if (task.timeLeft <= 1) {
-            // Subtract score based on borderColor
-            let penalty = 0;
-            switch (task.borderColor) {
-              case "blue":
-                penalty = -1;
-                break;
-              case "yellow":
-                penalty = -3;
-                break;
-              case "orange":
-                penalty = -10;
-                break;
-            }
-            setScore((s) => s + penalty);
-
+            setScore((s) => s + PENALTIES[task.borderColor]);
             return { ...task, timeLeft: 0, missed: true };
           }
 
@@ -109,7 +108,6 @@ export default function TaskGame() {
     return () => clearInterval(moveInterval);
   }, []);
 
-  // Add a new REST!!! position every 3 seconds (below reserved top area)
   useEffect(() => {
     const restInterval = setInterval(() => {
       setRestPositions((prev) => [
@@ -119,23 +117,22 @@ export default function TaskGame() {
           left: Math.random() * (window.innerWidth - 100),
         },
       ]);
-    }, 3000);
+    }, REST_SPAWN_INTERVAL_MS);
 
     return () => clearInterval(restInterval);
   }, []);
 
-  // Sick Day popup logic
   useEffect(() => {
     let sickDayTimeout: ReturnType<typeof setTimeout>;
 
     const scheduleSickDay = () => {
-      const delay = 10000 + Math.random() * 10000; // 10-20 seconds random
+      const delay = SICK_DAY_MIN_DELAY_MS + Math.random() * (SICK_DAY_MAX_DELAY_MS - SICK_DAY_MIN_DELAY_MS);
       sickDayTimeout = setTimeout(() => {
         setShowSickDay(true);
         setTimeout(() => {
           setShowSickDay(false);
           scheduleSickDay();
-        }, 5000);
+        }, SICK_DAY_DURATION_MS);
       }, delay);
     };
 
@@ -144,14 +141,13 @@ export default function TaskGame() {
     return () => clearTimeout(sickDayTimeout);
   }, []);
 
-  // Remove only active tasks on click, but disable if Sick Day active
   const removeTask = (id: number) => {
     if (showSickDay) return;
 
     setTasks((prev) => {
       const task = prev.find((t) => t.id === id);
-      if (!task || task.missed) return prev; // block removal
-      setScore((s) => s + 1); // optional: reward for clicking
+      if (!task || task.missed) return prev;
+      setScore((s) => s + 1);
       return prev.filter((t) => t.id !== id);
     });
   };
@@ -163,16 +159,15 @@ export default function TaskGame() {
       <div className="instructions">
         Click the tasks to complete. Penalties on miss:
         <div>
-          <span className="penalty-label orange">Orange: -10</span>{" "}
-          <span className="penalty-label yellow">Yellow: -3</span>{" "}
-          <span className="penalty-label blue">Blue: -1</span>
+          <span className="penalty-label orange">Orange: {PENALTIES.orange}</span>{" "}
+          <span className="penalty-label yellow">Yellow: {PENALTIES.yellow}</span>{" "}
+          <span className="penalty-label blue">Blue: {PENALTIES.blue}</span>
         </div>
         <div className="instructions-extra">
-          If it's too difficult, try using a to-do list! Add all the tasks to the list, prioritize them based on color and time remaining, and do them one by one!
+          If this is too difficult, try using a to-do list! Add all the tasks to your list, prioritize them based on color and time remaining, and do them one by one!
         </div>
       </div>
 
-      {/* REST!!! texts in background */}
       {restPositions.map((pos, i) => (
         <div
           key={`rest-${i}`}
@@ -183,7 +178,6 @@ export default function TaskGame() {
         </div>
       ))}
 
-      {/* Tasks */}
       {tasks.map((task) => (
         <div
           key={task.id}
@@ -204,7 +198,6 @@ export default function TaskGame() {
         </div>
       ))}
 
-      {/* Sick Day popup */}
       {showSickDay && (
         <div className="sick-day-popup">
           Sick day
